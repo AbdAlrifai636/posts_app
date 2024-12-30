@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:albarakah/models/posts_model.dart';
 import 'package:dio/dio.dart';
 
@@ -10,10 +12,10 @@ class Services{
 response =await dio.get("$url/$index");
 try{
   PostsModel postsModel = PostsModel.fromJson(response!.data);
-  print(postsModel);
+  log("$postsModel");
 return postsModel;
 } catch(e){
-  print(e);
+  log('Error: $e');
   return null;
 }
   }
@@ -21,20 +23,20 @@ return postsModel;
     try{
       response =await dio.get(url);
       List <PostsModel> list = PostsModel.jsonArray(response?.data);
-      print(list);
+      log("$list");
       return list;
     } catch(e){
-      print(e);
+      log('Error: $e');
       return [];
     }
   }
 Future<bool> createPost(PostsModel postModel)async{
     try{
       response = await dio.post(url,data: postModel.toJson());
-      print(response!.data);
+      log(response!.data);
       return true;
     }catch (e){
-      print(e);
+      log('Error: $e');
       return false;
     }
 }
@@ -42,13 +44,23 @@ Future<bool> createPost(PostsModel postModel)async{
 Future<bool> deletePost(String index)async{
 
     try{
-      response = await dio.delete("https://673dad8b0118dbfe86084618.mockapi.io/posts/$index");
-      print(response!.data);
+      response = await dio.delete("$url/$index");
+      log(response!.data);
       return true;
     }catch(e){
-      print(e);
+      log('Error: $e');
       return false ;
     }
 }
 
+  Future<bool> updatePost(String index, PostsModel postModel) async {
+    try {
+      final response = await dio.put("$url/$index", data: postModel.toJson());
+      log('Response: ${response.data}');
+      return true;
+    } catch (e) {
+      log('Error: $e');
+      return false;
+    }
+  }
 }

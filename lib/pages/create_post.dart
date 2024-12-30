@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class CreatePost extends StatefulWidget {
-  const CreatePost({super.key});
+
+
+    CreatePost({super.key,});
 
   @override
   State<CreatePost> createState() => _CreatePostState();
@@ -42,7 +44,7 @@ Services services =Services();
                     likes: 15,
                     comments: "comments",
                     id: ""));
-                Future.delayed(Duration(milliseconds: 3),()=>Navigator.push(context, MaterialPageRoute(builder: (context)=>HomePage())));
+                Future.delayed(Duration(milliseconds: 3),()=>Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomePage())));
 
               },
               child: const Text(

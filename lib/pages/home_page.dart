@@ -1,5 +1,6 @@
-import 'package:albarakah/models/posts_model.dart';
+import 'package:albarakah/method/method.dart';
 import 'package:albarakah/pages/create_post.dart';
+import 'package:albarakah/pages/update_post.dart';
 import 'package:albarakah/services/services.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -39,7 +40,7 @@ class _HomePageState extends State<HomePage> {
     Icons.list,
   ];
   Services services = Services();
-
+  Method method = Method();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,6 +48,7 @@ class _HomePageState extends State<HomePage> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
+            automaticallyImplyLeading: false,
             backgroundColor: Colors.white,
             expandedHeight: 170.0,
             pinned: true,
@@ -77,9 +79,7 @@ class _HomePageState extends State<HomePage> {
                                 Icons.search,
                                 color: Colors.black,
                               ),
-                              onPressed: () {
-                                services.createPost(PostsModel(createdAt: DateTime(2001), userName: "userName", avatar: "avatar", time: DateTime(2515), content: "content", likes: 15, comments: "comments", id: ""));
-                              },
+                              onPressed: () {},
                             ),
                             IconButton(
                               icon: const Icon(
@@ -143,21 +143,27 @@ class _HomePageState extends State<HomePage> {
                               "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTLA994hpL3PMmq0scCuWOu0LGsjef49dyXVg&s"),
                         ),
                         InkWell(
-                          onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>CreatePost()));
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => CreatePost()));
                           },
-
                           child: Container(
                             width: 240,
                             height: 40,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(35),
-                                border: Border.all(color: Colors.grey),
+                              border: Border.all(color: Colors.grey),
                             ),
-                            child: Center(
-                              child: Text("What's on your mind ?",style:  TextStyle(color: Colors.black,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w400),),
+                            child: const Center(
+                              child: Text(
+                                "What's on your mind ?",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w400),
+                              ),
                             ),
                           ),
                         ),
@@ -230,8 +236,10 @@ class _HomePageState extends State<HomePage> {
                                         onTap: () async {},
                                         child: CircleAvatar(
                                           radius: 23,
-                                          backgroundImage:
-                                              NetworkImage(imagePerson[index]),
+                                          backgroundImage: NetworkImage(index <
+                                                  14
+                                              ? imagePerson[index]
+                                              : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTLA994hpL3PMmq0scCuWOu0LGsjef49dyXVg&s"),
                                         ),
                                       ),
                                     ),
@@ -250,20 +258,20 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                           ),
                                         ),
-                                        const Row(
+                                        Row(
                                           children: [
                                             Text(
-                                              '1m',
-                                              style: TextStyle(
+                                              " ${method.calculateTimeDifference(snapshot.data![index].createdAt)}",
+                                              style: const TextStyle(
                                                 fontSize: 12.0,
                                                 fontWeight: FontWeight.normal,
                                                 color: Colors.grey,
                                               ),
                                             ),
-                                            SizedBox(
+                                            const SizedBox(
                                               width: 5,
                                             ),
-                                            FaIcon(
+                                            const FaIcon(
                                               FontAwesomeIcons.earthAmericas,
                                               size: 18,
                                               color: Colors.grey,
@@ -279,19 +287,36 @@ class _HomePageState extends State<HomePage> {
                                       const EdgeInsets.symmetric(horizontal: 8.0),
                                   child: Row(
                                     children: [
-                                      const Icon(
-                                        Icons.more_horiz_outlined,
-                                        size: 35,
+                                      InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      UpdatePostPage(
+                                                        id: snapshot.data![index].id,
+                                                        content: snapshot
+                                                            .data![index]
+                                                            .content,
+                                                        userName: snapshot
+                                                            .data![index]
+                                                            .userName,
+                                                      )));
+                                        },
+                                        child: const Icon(
+                                          color: Colors.amber,
+                                          Icons.edit,
+                                          size: 25,
+                                        ),
                                       ),
                                       const SizedBox(
                                         width: 25,
                                       ),
                                       InkWell(
-                                        onTap:()async{
-                                          await services.deletePost(snapshot.data![index].id);
-                                          setState(() {
-
-                                          });
+                                        onTap: () async {
+                                          await services.deletePost(
+                                              snapshot.data![index].id);
+                                          setState(() {});
                                         },
                                         child: const Icon(
                                           Icons.close,
