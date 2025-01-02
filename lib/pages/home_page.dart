@@ -1,9 +1,13 @@
+import 'package:albarakah/config/service_locater.dart';
 import 'package:albarakah/method/method.dart';
+import 'package:albarakah/models/posts_model.dart';
+import 'package:albarakah/pages/auth/auth_page.dart';
 import 'package:albarakah/pages/create_post.dart';
 import 'package:albarakah/pages/update_post.dart';
 import 'package:albarakah/services/services.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key});
@@ -90,10 +94,16 @@ class _HomePageState extends State<HomePage> {
                             ),
                             IconButton(
                               icon: const Icon(
-                                Icons.add_circle,
+                                Icons.logout,
                                 color: Colors.black,
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                getIt<SharedPreferences>().clear();
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => AuthPage()));
+                              },
                             ),
                           ],
                         ),
@@ -143,11 +153,15 @@ class _HomePageState extends State<HomePage> {
                               "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTLA994hpL3PMmq0scCuWOu0LGsjef49dyXVg&s"),
                         ),
                         InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => CreatePost()));
+                          onTap: () async {
+                            final newPost = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CreatePost()),
+                            );
+                            if (newPost != null && newPost is PostsModel) {
+                              setState(() {});
+                            }
                           },
                           child: Container(
                             width: 240,
@@ -283,25 +297,29 @@ class _HomePageState extends State<HomePage> {
                                   ],
                                 ),
                                 Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 8.0),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0),
                                   child: Row(
                                     children: [
                                       InkWell(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      UpdatePostPage(
-                                                        id: snapshot.data![index].id,
-                                                        content: snapshot
-                                                            .data![index]
-                                                            .content,
-                                                        userName: snapshot
-                                                            .data![index]
-                                                            .userName,
-                                                      )));
+                                        onTap: () async {
+                                          final update = await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>  UpdatePostPage(
+                                                  id: snapshot
+                                                      .data![index].id,
+                                                  content: snapshot
+                                                      .data![index]
+                                                      .content,
+                                                  userName: snapshot
+                                                      .data![index]
+                                                      .userName,
+                                                )),
+                                          );
+                                          if (update != null && update is PostsModel) {
+                                            setState(() {});
+                                          }
                                         },
                                         child: const Icon(
                                           color: Colors.amber,

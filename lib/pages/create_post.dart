@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class CreatePost extends StatefulWidget {
-
-
-    CreatePost({super.key,});
+  CreatePost({
+    super.key,
+  });
 
   @override
   State<CreatePost> createState() => _CreatePostState();
@@ -15,7 +15,7 @@ class CreatePost extends StatefulWidget {
 
 class _CreatePostState extends State<CreatePost> {
   TextEditingController addPost = TextEditingController();
-Services services =Services();
+  Services services = Services();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,18 +34,27 @@ Services services =Services();
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: MaterialButton(
-              onPressed: () {
-                services.createPost(PostsModel(
+              onPressed: () async {
+                final newPost = PostsModel(
                     createdAt: DateTime.now(),
-                    userName:"Abd AL Rifai",
-                    avatar: "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
+                    userName: "Abd AL Rifai",
+                    avatar:
+                        "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
                     time: DateTime.now(),
                     content: addPost.text,
                     likes: 15,
                     comments: "comments",
-                    id: ""));
-                Future.delayed(Duration(milliseconds: 3),()=>Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomePage())));
+                    id: "");
+                final success = await services.createPost(newPost);
 
+                if (success) {
+                  Future.delayed(Duration(milliseconds: 3),
+                      () => Navigator.pop(context, newPost));
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Failed to create the post')),
+                  );
+                }
               },
               child: const Text(
                 'POST',
@@ -90,15 +99,15 @@ Services services =Services();
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: TextField(
-              minLines: 3,
-              maxLines: 6,
-              controller: addPost,
-              decoration: const InputDecoration(
-                  hintStyle: TextStyle(
-                      fontSize: 25, fontWeight: FontWeight.w300),
+                minLines: 3,
+                maxLines: 6,
+                controller: addPost,
+                decoration: const InputDecoration(
+                  hintStyle:
+                      TextStyle(fontSize: 25, fontWeight: FontWeight.w300),
                   hintText: "What's on your mind ?",
-                border: InputBorder.none,
-              )),
+                  border: InputBorder.none,
+                )),
           )
         ],
       ),

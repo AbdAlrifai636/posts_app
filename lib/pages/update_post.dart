@@ -49,25 +49,23 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
             child: MaterialButton(
               onPressed: () async {
                 log('Index: ${widget.id}');
-
-                final success = await services.updatePost(
-                    widget.id,
-                    PostsModel(
-                      createdAt: DateTime.now(),
-                      userName: widget.userName,
-                      avatar:
-                          "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
-                      time: DateTime.now(),
-                      content: addPost.text,
-                      likes: 119,
-                      comments: "comments",
-                      id: "123",
-                    ));
+                final updatePost = PostsModel(
+  createdAt: DateTime.now(),
+  userName: widget.userName,
+  avatar:
+  "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
+  time: DateTime.now(),
+  content: addPost.text,
+  likes: 119,
+  comments: "comments",
+  id: "123",
+);
+                final success = await   services.updatePost(widget.id, updatePost);
 
                 if (success) {
-                  Navigator.pushReplacement(
+                  Navigator.pop(
                     context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
+                   updatePost,
                   );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
